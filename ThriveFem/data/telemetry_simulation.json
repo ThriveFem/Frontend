@@ -1,0 +1,18 @@
+{
+  "simulation_lifecycle": [
+    {
+      "timestamp_node": "08:00_Baseline",
+      "radiance_score_percentage": 92,
+      "heart_rate_variability_rmssd": 68,
+      "resting_heart_rate_bpm": 62,
+      "system_alert_triggered": false
+    },
+    {
+      "timestamp_node": "15:30_Stress_Peak",
+      "radiance_score_percentage": 58,
+      "heart_rate_variability_rmssd": 28,
+      "resting_heart_rate_bpm": 89,
+      "system_alert_triggered": true
+    }
+  ]
+}
