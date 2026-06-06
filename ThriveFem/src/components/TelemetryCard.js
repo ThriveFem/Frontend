@@ -1,30 +1,29 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { COLORS } from '../theme/colors';
-import { Activity, Moon } from 'lucide-react-native';
 
 export const TelemetryCard = ({ label, value, subtext, icon: Icon }) => (
   <View style={styles.card}>
     <View style={styles.header}>
-      <Icon color={COLORS.primary} size={20} />
+      <Icon color={COLORS.primary} size={16} />
       <Text style={styles.label}>{label}</Text>
     </View>
     <Text style={styles.value}>{value}</Text>
-    <Text style={styles.subtext}>{subtext}</Text>
+    <Text style={styles.subtext} numberOfLines={2}>{subtext}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: 18,
     padding: 16,
-    width: '48%', // Matrix layout
+    width: '48%',
     borderWidth: 1,
-    borderColor: 'rgba(249, 168, 212, 0.1)', // #F9A8D4 with low alpha
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  label: { color: COLORS.secondary, fontSize: 11, marginLeft: 6, fontWeight: 'bold', textTransform: 'uppercase' },
-  value: { color: COLORS.text, fontSize: 18, fontWeight: '700' },
-  subtext: { color: COLORS.text, fontSize: 10, opacity: 0.5, marginTop: 4 },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  label: { color: COLORS.secondary, fontSize: 10, marginLeft: 6, fontWeight: '800', textTransform: 'uppercase' },
+  value: { color: COLORS.text, fontSize: 20, fontWeight: 'bold' },
+  subtext: { color: COLORS.text, fontSize: 10, opacity: 0.6, marginTop: 4, lineHeight: 14 },
 });

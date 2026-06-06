@@ -5,6 +5,11 @@
       "radiance_score_percentage": 92,
       "heart_rate_variability_rmssd": 68,
       "resting_heart_rate_bpm": 62,
+      "sleep_session_data": {
+        "total_duration_hours": 7.8,
+        "deep_sleep_percentage": 24,
+        "sleep_efficiency_score": 88
+      },
       "system_alert_triggered": false
     },
     {
@@ -12,6 +17,11 @@
       "radiance_score_percentage": 58,
       "heart_rate_variability_rmssd": 28,
       "resting_heart_rate_bpm": 89,
+      "sleep_session_data": {
+        "total_duration_hours": 0.0,
+        "deep_sleep_percentage": 0,
+        "sleep_efficiency_score": 0
+      },
       "system_alert_triggered": true
     }
   ]
