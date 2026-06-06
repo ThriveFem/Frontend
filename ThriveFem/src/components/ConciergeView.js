@@ -6,12 +6,17 @@ import { ShieldCheck, User, ArrowRight, CheckCircle2 } from 'lucide-react-native
 
 export const ConciergeView = ({ experts, language = 'en' }) => {
   const T = STRINGS[language] || STRINGS.en;
-  const [filter, setFilter] = useState(T.categories[0]);
+  
+  // Professional Fix: Use the index to keep filtering stable across languages
+  const [filterIndex, setFilterIndex] = useState(0); 
   const [bookedExpert, setBookedExpert] = useState(null);
 
-  const filteredExperts = filter === T.categories[0] 
+  // Mapping indices to the English keys in experts.js
+  const dataKeys = ['All', 'Cosmetic Dermatologists', 'Stress Coaches', 'Sleep Experts'];
+
+  const filteredExperts = filterIndex === 0 
     ? experts 
-    : experts.filter((e, index) => T.categories.includes(e.category) || e.category.includes('Dermatologist')); 
+    : experts.filter(e => e.category === dataKeys[filterIndex]);
 
   return (
     <View style={styles.container}>
@@ -19,13 +24,13 @@ export const ConciergeView = ({ experts, language = 'en' }) => {
       
       <View style={styles.tabBarWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabBarContent}>
-          {T.categories.map((cat) => (
+          {T.categories.map((cat, index) => (
             <Pressable 
               key={cat} 
-              onPress={() => setFilter(cat)}
-              style={[styles.tab, filter === cat && styles.activeTab]}
+              onPress={() => setFilterIndex(index)}
+              style={[styles.tab, filterIndex === index && styles.activeTab]}
             >
-              <Text style={[styles.tabText, filter === cat && styles.activeTabText]}>{cat}</Text>
+              <Text style={[styles.tabText, filterIndex === index && styles.activeTabText]}>{cat}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -42,7 +47,7 @@ export const ConciergeView = ({ experts, language = 'en' }) => {
               <View style={styles.avatar}><User color={COLORS.secondary} size={20} /></View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.expertName}>{item.name}</Text>
-                <Text style={styles.expertRole}>{language === 'en' ? item.role : 'ባለሙያ'}</Text>
+                <Text style={styles.expertRole}>{language === 'en' ? item.role : 'የባለሙያ አማካሪ'}</Text>
               </View>
             </View>
 
@@ -65,9 +70,7 @@ export const ConciergeView = ({ experts, language = 'en' }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.successCard}>
             <CheckCircle2 color={COLORS.primary} size={60} style={{ marginBottom: 20 }} />
-            <Text style={styles.successTitle}>
-              {language === 'en' ? 'Confirmed' : 'ተረጋግጧል'}
-            </Text>
+            <Text style={styles.successTitle}>{language === 'en' ? 'Confirmed' : 'ተረጋግጧል'}</Text>
             <Text style={styles.successBody}>
               {language === 'en' 
                 ? `Session with ${bookedExpert?.name} is scheduled.`
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 10 },
   title: { color: COLORS.text, fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
   tabBarWrapper: { marginBottom: 20 },
-  tab: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20, marginRight: 10, backgroundColor: 'rgba(255,255,255,0.05)', minWidth: 70, alignItems: 'center' },
+  tab: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20, marginRight: 10, backgroundColor: 'rgba(255,255,255,0.05)', minWidth: 75, alignItems: 'center', justifyContent: 'center' },
   activeTab: { backgroundColor: COLORS.primary },
   tabText: { color: COLORS.text, opacity: 0.7, fontSize: 12, fontWeight: '700' },
   activeTabText: { opacity: 1, color: COLORS.background },
