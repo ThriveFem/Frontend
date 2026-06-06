@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  Pressable, 
-  StatusBar, 
-  Dimensions,
-  ScrollView 
+  StyleSheet, View, Text, Pressable, StatusBar, Dimensions, ScrollView 
 } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 // --- Theme, Data, Store & Translations ---
 import { COLORS } from './src/theme/colors';
@@ -16,7 +11,7 @@ import { useSimulationStore } from './src/store/useSimulationStore';
 import { EXPERTS } from './src/data/experts';
 import { STRINGS } from './src/data/translations';
 
-// --- Components ---
+// --- Views & Components ---
 import { StatusBanner } from './src/components/StatusBanner';
 import { RadianceRing } from './src/components/RadianceRing';
 import { TelemetryCard } from './src/components/TelemetryCard';
@@ -36,9 +31,10 @@ function MainApp() {
   const [currentView, setCurrentView] = useState('dashboard');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
 
-  // Translation Object based on state machine
+  // Translation Helper
   const T = STRINGS[language] || STRINGS.en;
 
+  // Logic: View 3 Alert Trigger
   useEffect(() => {
     if (activeData?.system_alert_triggered) {
       setIsAlertVisible(true);
@@ -47,32 +43,38 @@ function MainApp() {
     }
   }, [activeData]);
 
+  // Handle Language Switch with Haptics (Professional Touch)
+  const handleLanguageChange = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    toggleLanguage();
+  };
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar barStyle="light-content" />
       
       <View style={styles.mainWrapper}>
         
+        {/* TOP ACTION BAR (LOCALIZATION & STATUS) */}
+        <View style={styles.topActionBar}>
+          <StatusBanner />
+          <Pressable 
+            onPress={handleLanguageChange} 
+            style={styles.languageToggle}
+            hitSlop={20}
+          >
+            <Languages color={COLORS.primary} size={18} />
+            <Text style={styles.languageLabel}>{T.langLabel}</Text>
+          </Pressable>
+        </View>
+
         {currentView === 'dashboard' && (
           <ScrollView 
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 120 }}
           >
-            {/* --- TOP ACTION BAR (LOCALIZATION & STATUS) --- */}
-            <View style={styles.topActionBar}>
-              <StatusBanner />
-              <Pressable 
-                onPress={toggleLanguage} 
-                style={styles.languageToggle}
-                hitSlop={20}
-              >
-                <Languages color={COLORS.primary} size={18} />
-                <Text style={styles.languageLabel}>{T.langLabel}</Text>
-              </Pressable>
-            </View>
-            
             <View style={styles.headerContainer}>
-              <Text style={styles.brandText}>ThriveFem — MVP</Text>
+              <Text style={styles.brandText}>ThriveFem </Text>
               <Text style={styles.viewTitle}>{T.dashboard}</Text>
               <View style={styles.nodeBadge}>
                 <Text style={styles.nodeText}>
@@ -95,7 +97,7 @@ function MainApp() {
               <TelemetryCard 
                 label={T.sleep}
                 value={`${activeData?.sleep_session_data?.sleep_efficiency_score || 0}%`}
-                subtext={`Repairing: ${activeData?.sleep_session_data?.deep_sleep_percentage || 0}% Delta Window`}
+                subtext={`Repairing: ${activeData?.sleep_session_data?.deep_sleep_percentage || 0}% Delta`}
                 icon={Moon}
               />
             </View>
@@ -107,13 +109,18 @@ function MainApp() {
           </ScrollView>
         )}
 
+        {/* PASSING LANGUAGE DOWN TO SUB-VIEWS */}
         {currentView === 'timeline' && <StressTimeline language={language} />}
         {currentView === 'concierge' && <ConciergeView experts={EXPERTS} language={language} />}
       </View>
 
-      <StressModal visible={isAlertVisible} onDismiss={() => setIsAlertVisible(false)} language={language} />
+      <StressModal 
+        visible={isAlertVisible} 
+        onDismiss={() => setIsAlertVisible(false)} 
+        language={language} 
+      />
 
-      {/* --- FOOTER NAVIGATION --- */}
+      {/* FOOTER NAVIGATION */}
       <View style={[styles.navBar, { paddingBottom: insets.bottom > 0 ? insets.bottom : 20 }]}>
         <NavButton icon={BarChart3} label={T.insights} active={currentView === 'dashboard'} onPress={() => setCurrentView('dashboard')} />
         <NavButton icon={LineChart} label={T.timeline} active={currentView === 'timeline'} onPress={() => setCurrentView('timeline')} />
@@ -161,8 +168,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   languageLabel: {
     color: COLORS.text,
